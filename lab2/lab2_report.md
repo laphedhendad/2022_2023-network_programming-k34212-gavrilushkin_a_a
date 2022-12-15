@@ -65,6 +65,7 @@ ansible_ssh_port=22
           - /routing ospf area add instance=default name=backbone
           - /routing ospf interface-template add area=backbone interfaces=ether1 type=ptp
 ```
+
 ###Результаты
 
 1. Запускаем playbook командой:
