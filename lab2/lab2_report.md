@@ -84,6 +84,7 @@ export compact file=configuration.rsc
 4. [Конфигурация R1](/lab2/configuration_R1.rsc)
 5. [Конфигурация R2](/lab2/configuration_R2.rsc)
 6. Диаграмма получившейся сети:
+ 
 ![Диаграмма сети](/lab2/Screenshot_3.png)
 
 ## Вывод
