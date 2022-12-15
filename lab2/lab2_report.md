@@ -65,16 +65,18 @@ ansible_ssh_port=22
           - /routing ospf area add instance=default name=backbone
           - /routing ospf interface-template add area=backbone interfaces=ether1 type=ptp
 ```
-
-###Результаты
+### Результаты
 
 1. Запускаем playbook командой:
 ```
 ansible-playbook sashapb_1.yml -i sashahost.ini(название inventory-файла)
 ```
 2. Дожидаемся завершения и смотрим на результаты:
+
 ![Новый пользователь](/lab2/Screenshot_1.png)
+
 ![OSPF-сосед](/lab2/Screenshot_2.png)
+
 3. Экспортируем конфигурацию роутера командой:
 ```
 export compact file=configuration.rsc
