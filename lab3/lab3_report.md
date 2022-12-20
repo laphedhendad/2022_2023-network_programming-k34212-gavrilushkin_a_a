@@ -10,82 +10,191 @@ Group: K34212
 
 Author: Gavrilushkin Alexandr Alekseevich
 
-Lab: Lab1
+Lab: Lab3
 
-Date of create: 04.09.2022
+Date of create: 15.12.2022
 
-Date of finished: 
+Date of finished: 20.12.2022
 
-## Настройка VPN сервера
+## Установка Netbox
 
-### Создаем виртуальную машину в [Яндекс.Облаке](https://cloud.yandex.ru)
+### Настройка окружения
 
-1. Для создания пары SSH-ключей запускаем в терминале Windows команду:
+1. Устанавливаем PostgreSQL:
 ```
-ssh-keygen -t ed25519
+sudo apt-get install -y postgresql libpq-dev
 ```
-2. После запуска ВМ, подключаемся к ней через ssh:
+2. Подключаемся к PostgreSQL:
 ```
-ssh -i <путь_до_приватного_ключа> <имя_пользователя>@<ip_облака>
+sudo -u postgres psql
 ```
-3. Устанавливаем Python3 и Ansible:
+3. Создаём БД и суперпользователя:
 ```
-sudo apt install python3-pip
-sudo pip3 install ansible
-ansible --version
+postgres=# CREATE DATABASE netbox;
+postgres=# CREATE USER admin WITH PASSWORD 'admin';
+postgres=# GRANT ALL PRIVILEGES ON DATABASE netbox TO admin;
 ```
-### Настраиваем OpenVPN Server
+4. Устанавливаем Redis:
+```
+sudo apt-get install -y redis-server
+```
+5. Устанавливаем python-пакеты:
+```
+sudo apt-get install -y python3 python3-pip python3-venv python3-dev build-essential libxml2-dev libxslt1-dev libffi-dev libpq-dev libssl-dev zlib1g-dev
+```
 
-1. Устанавливаем необходимые зависимости (ca-сертификаты):
-```
-apt install ca-certificates wget net-tools gnupg
-```
-2. Добавляем OpenVPN в список репозиториев, отслеживаемых apt:
-```
-wget -qO - https://as-repository.openvpn.net/as-repo-public.gpg | apt-key add -
-echo "deb http://as-repository.openvpn.net/as/debian focal main">/etc/apt/sources.list.d/openvpn-as-repo.list
-apt update
-```
-3. Устанавливаем OpenVPN access server:
-```
-apt install openvpn-as
-```
-4. После установки получаем адрес сайта с WebUI, а также логин и пароль для админа:
-```
-(Примерный вид консоли)
-Access Server Web UIs are available here:
-Admin UI: https://<your-ip>:943/admin
-Client UI: https://<your-ip>:943
-Admin login 'openvpn', password '7gsg7qwrqw7'
-```
-5. На этом моменте может прийти в голову идея настроить удаленный рабочий стол и установить в облаке браузер, чтобы запустить веб-среду... Выбрасываем эту мысль из головы, в поисковую строку браузера на локальном пк вбиваем <ip_облака>:943/admin и нажимаем Enter.
+### Установка Netbox
 
-6. После успешной авторизации, нас встречает интерфейс OpenVPN:
-![OpenVPN UI](/lab1/Screenshot_4.png)
+1. Скачиваем архив с netbox:
+```
+wget https://github.com/netbox-community/netbox/archive/v3.4.1.tar.gz
+tar -xzf v3.4.1.tar.gz -C /opt
+```
+2. Добавляем пользователя:
+```
+groupadd --system netbox
+adduser --system --gid 996 netbox
+chown --recursive netbox /opt/netbox/netbox/media/
+```
+3.Создаём окружение:
+```
+python3 -m venv /opt/netbox/venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
 
-7. Переходим в Configuration/Advanced VPN и устанавливаем TLS Control Channel Security в позицию none, чтобы отключить проверку tls-сертификата.
-8. В Configuration/Network Settings убираем протокол UDP, так как наш клиент в лице Микротика udp не поддерживает.
-### Регистрация клиента
-1. В User Managment/User Permissions добавляем нового пользователя.
-2. В User Managment/User Profiles на панели только что созданного юзера нажимаем New Profile/Create Profile. Получаем в подарок файл с расширением .ovpn, необходимый для настройки клиента.
+### Настройка Netbox
 
-## Подключение CHR клиента
-1. Скачиваем образ Cloud Hosted Router с [Официального сайта Mikrotik](https://mikrotik.com/download)
-2. Устанавливаем его на виртуальную машину, например VirtualBox.
-3. Скачиваем WinBox (интерфейс для CHR) с [того же сайта](https://mikrotik.com/download)
-4. Подключаем WinBox к CHR. IP машины можно посмотреть командой ```ip address print```. Логин admin, пароль пустой.
+1. Копируем конфигурационный файл:
+```
+cp configuration.example.py configuration.py
+```
+2. В ALLOWED_HOSTS добавляем 127.0.0.1, в DATABASE логин и пароль, SECRET_KEY генерируем самостоятельно:
+```
+python3 netbox/generate_secret_key.py
+```
+3. Запускаем миграции с БД:
+```
+source venv/bin/activate
+python3 manage.py migrate
+```
+4. Создаём суперпользователя.
+```
+python3 manage.py createsuperuser
+```
+5. Собираем статику:
+```
+python3 manage.py collectstatic --no-input
+```
 
-Следующие пункты выполняются в среде WinBox.
+### Установка Nginx
 
-5. Открываем окно Files и закидываем тот самый файл с расширением .ovpn
-6. В окне System/Certificates импортируем сертификат (ovpn-файл)
-7. В окне Interfaces создаем новый интерфейс типа OVPN Client. Вводим необходимые данные:
-![Настройка клиента](/lab1/Screenshot_5.png)
-8. Радуемся надписи connected в статусе.
+```
+sudo apt-get install -y nginx
+sudo cp /opt/netbox/contrib/nginx.conf /etc/nginx/sites-available/netbox
+cd /etc/nginx/sites-enabled/
+sudo rm default
+sudo ln -s /etc/nginx/sites-available/netbox
+sudo nginx -t
+sudo nginx -s reload
+sudo cp contrib/gunicorn.py /opt/netbox/gunicorn.py
+sudo cp contrib/*.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl start netbox netbox-rq
+sudo systemctl enable netbox netbox-rq
+```
 
-## Реузьтат
-Пингуем с сервера CHR по VPN-адресу
+### Запуск сервера
 
-![Ping client](/lab1/Screenshot_6.png)
+```
+python3 manage.py runserver 0.0.0.0:8000 --insecure
+```
+
+## Информация о роутерах
+
+Создаём сайт, мануфактуру и роль. Создаём 2 роутера. Создаём для этих роутеров интерфейс ether2. Назначаем ему первичный IP, равный IP роутеров в сети и произвольный вторичный адрес. Итог:
+
+![lab3_1.png]
+
+## Устанавливка ansible-модулей для Netbox'a
+
+```
+ansible-galaxy collection install netbox.netbox
+```
+
+## Сбор данных из Netbox
+
+1. Создаём файл netbox_inventory.yml:
+```
+plugin: netbox.netbox.nb_inventory
+api_endpoint: http://127.0.0.1:8000
+token: 4a6081059b705c5bd93fb1f1c40e9dd904d83f56
+validate_certs: True
+config_context: False
+interfaces: True
+```
+2. Сохраняем вывод скрипта в файл командой:
+```
+ansible-inventory -v --list -y -i netbox_inventory.yml > nb_inventory.yml
+```
+3. В файле теперь находится информация об устройствах в YAML-формате. Мы можем использовать данный файл в качестве инвентарного.
+
+## Настройка роутеров по информации из Netbox
+
+1. Перенесём в новый inventory-файл старые переменные для подключения к роутерам:
+```
+ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: community.routeros.routeros
+ansible_ssh_user: admin
+ansible_ssh_pass: "111"
+ansible_ssh_port: 22
+```
+[Итоговый файл](nb_inventory.yml)
+2. Playbook для изменения имени устройства и добавления IP:
+```
+- name: Setup Routers
+  hosts: ungrouped
+  tasks:
+    - name: Set Device Name
+      community.routeros.command:
+        commands:
+          - /system identity set name="{{interfaces[0].device.name}}"
+    - name: Set IP
+      community.routeros.command:
+        commands:
+        - /ip address add address="{{interfaces[0].ip_addresses[1].address}}" interface="{{interfaces[0].display}}"
+```
+
+## Экспорт данных с роутера в Netbox
+
+```
+- name: Get Serial Numbers
+  hosts: ungrouped
+  tasks:
+    - name: Get Serial Number
+      community.routeros.command:
+        commands:
+          - /system license print
+      register: license_print
+    - name: Get Name
+      community.routeros.command:
+        commands:
+          - /system identity print
+      register: identity_print
+    - name: Add Serial Number to Netbox
+      netbox_device:
+        netbox_url: http://127.0.0.1:8000
+        netbox_token: 4a6081059b705c5bd93fb1f1c40e9dd904d83f56
+        data:
+          name: "{{identity_print.stdout_lines[0][0].split(' ').1}}"
+          serial: "{{license_print.stdout_lines[0][0].split(' ').1}}"
+```
+
+## Результаты
+
+!(lab3_2.png)
+
+!(lab3_3.png)
+
 ## Вывод
 В процессе выполнения лабораторной работы я научился поднимать OpenVPN сервер на Ubuntu, познакомился с OS от Mikrotik. Пройдя путь боли и страданий, создал между сервером и CHR-клиентом VPN-туннель. Научился подключать к виртуальной машине удаленный рабочий стол через VNC (к ходу лабораторной работы это отношения не имеет, но навык есть навык).
