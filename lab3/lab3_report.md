@@ -56,7 +56,7 @@ groupadd --system netbox
 adduser --system --gid 996 netbox
 chown --recursive netbox /opt/netbox/netbox/media/
 ```
-3.Создаём окружение:
+3. Создаём окружение:
 ```
 python3 -m venv /opt/netbox/venv
 source venv/bin/activate
