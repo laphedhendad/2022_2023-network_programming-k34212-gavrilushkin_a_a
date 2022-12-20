@@ -1,0 +1,523 @@
+all:
+
+  vars:
+
+    ansible_connection: ansible.netcommon.network_cli
+
+    ansible_network_os: community.routeros.routeros
+
+    ansible_ssh_user: admin
+
+    ansible_ssh_pass: "111"
+
+    ansible_ssh_port: 22
+
+  children:
+
+    ungrouped:
+
+      hosts:
+
+        Mikrotik_1:
+
+          ansible_host: 10.10.10.5
+
+          custom_fields: {}
+
+          device_roles:
+
+          - router
+
+          device_types:
+
+          - router
+
+          interfaces:
+
+          - _occupied: false
+
+            bridge: null
+
+            cable: null
+
+            cable_end: ''
+
+            connected_endpoints: null
+
+            connected_endpoints_reachable: null
+
+            connected_endpoints_type: null
+
+            count_fhrp_groups: 0
+
+            count_ipaddresses: 2
+
+            created: '2022-12-20T06:03:29.222527Z'
+
+            custom_fields: {}
+
+            description: ''
+
+            device:
+
+              display: Mikrotik_1
+
+              id: 1
+
+              name: Mikrotik_1
+
+              url: http://127.0.0.1:8000/api/dcim/devices/1/
+
+            display: ether2
+
+            duplex: null
+
+            enabled: true
+
+            id: 1
+
+            ip_addresses:
+
+            - address: 10.10.10.5/24
+
+              comments: ''
+
+              created: '2022-12-20T06:21:23.342109Z'
+
+              custom_fields: {}
+
+              description: ''
+
+              display: 10.10.10.5/24
+
+              dns_name: ''
+
+              family:
+
+                label: IPv4
+
+                value: 4
+
+              id: 4
+
+              last_updated: '2022-12-20T06:21:23.342130Z'
+
+              nat_inside: null
+
+              nat_outside: []
+
+              role: null
+
+              status:
+
+                label: Active
+
+                value: active
+
+              tags: []
+
+              tenant: null
+
+              url: http://127.0.0.1:8000/api/ipam/ip-addresses/4/
+
+              vrf: null
+
+            - address: 10.10.10.15/24
+
+              comments: ''
+
+              created: '2022-12-20T06:05:43.068083Z'
+
+              custom_fields: {}
+
+              description: ''
+
+              display: 10.10.10.15/24
+
+              dns_name: ''
+
+              family:
+
+                label: IPv4
+
+                value: 4
+
+              id: 1
+
+              last_updated: '2022-12-20T06:05:43.068104Z'
+
+              nat_inside: null
+
+              nat_outside: []
+
+              role:
+
+                label: Secondary
+
+                value: secondary
+
+              status:
+
+                label: Active
+
+                value: active
+
+              tags: []
+
+              tenant: null
+
+              url: http://127.0.0.1:8000/api/ipam/ip-addresses/1/
+
+              vrf: null
+
+            l2vpn_termination: null
+
+            label: ''
+
+            lag: null
+
+            last_updated: '2022-12-20T06:03:29.222552Z'
+
+            link_peers: []
+
+            link_peers_type: null
+
+            mac_address: null
+
+            mark_connected: false
+
+            mgmt_only: false
+
+            mode: null
+
+            module: null
+
+            mtu: null
+
+            name: ether2
+
+            parent: null
+
+            poe_mode: null
+
+            poe_type: null
+
+            rf_channel: null
+
+            rf_channel_frequency: null
+
+            rf_channel_width: null
+
+            rf_role: null
+
+            speed: null
+
+            tagged_vlans: []
+
+            tags: []
+
+            tx_power: null
+
+            type:
+
+              label: 100BASE-TX (10/100ME)
+
+              value: 100base-tx
+
+            untagged_vlan: null
+
+            url: http://127.0.0.1:8000/api/dcim/interfaces/1/
+
+            vdcs: []
+
+            vrf: null
+
+            wireless_lans: []
+
+            wireless_link: null
+
+            wwn: null
+
+          is_virtual: false
+
+          local_context_data:
+
+          - null
+
+          locations: []
+
+          manufacturers:
+
+          - mymanufacturer
+
+          primary_ip4: 10.10.10.5
+
+          regions: []
+
+          services: []
+
+          site_groups: []
+
+          sites:
+
+          - mysite
+
+          status:
+
+            label: Active
+
+            value: active
+
+          tags: []
+
+        Mikrotik_2:
+
+          ansible_host: 10.10.10.3
+
+          custom_fields: {}
+
+          device_roles:
+
+          - router
+
+          device_types:
+
+          - router
+
+          interfaces:
+
+          - _occupied: false
+
+            bridge: null
+
+            cable: null
+
+            cable_end: ''
+
+            connected_endpoints: null
+
+            connected_endpoints_reachable: null
+
+            connected_endpoints_type: null
+
+            count_fhrp_groups: 0
+
+            count_ipaddresses: 2
+
+            created: '2022-12-20T06:03:45.455291Z'
+
+            custom_fields: {}
+
+            description: ''
+
+            device:
+
+              display: Mikrotik_2
+
+              id: 2
+
+              name: Mikrotik_2
+
+              url: http://127.0.0.1:8000/api/dcim/devices/2/
+
+            display: ether2
+
+            duplex: null
+
+            enabled: true
+
+            id: 2
+
+            ip_addresses:
+
+            - address: 10.10.10.3/24
+
+              comments: ''
+
+              created: '2022-12-20T06:20:53.558988Z'
+
+              custom_fields: {}
+
+              description: ''
+
+              display: 10.10.10.3/24
+
+              dns_name: ''
+
+              family:
+
+                label: IPv4
+
+                value: 4
+
+              id: 3
+
+              last_updated: '2022-12-20T06:20:53.559012Z'
+
+              nat_inside: null
+
+              nat_outside: []
+
+              role: null
+
+              status:
+
+                label: Active
+
+                value: active
+
+              tags: []
+
+              tenant: null
+
+              url: http://127.0.0.1:8000/api/ipam/ip-addresses/3/
+
+              vrf: null
+
+            - address: 10.10.10.13/24
+
+              comments: ''
+
+              created: '2022-12-20T06:06:37.673109Z'
+
+              custom_fields: {}
+
+              description: ''
+
+              display: 10.10.10.13/24
+
+              dns_name: ''
+
+              family:
+
+                label: IPv4
+
+                value: 4
+
+              id: 2
+
+              last_updated: '2022-12-20T06:06:37.673134Z'
+
+              nat_inside: null
+
+              nat_outside: []
+
+              role:
+
+                label: Secondary
+
+                value: secondary
+
+              status:
+
+                label: Active
+
+                value: active
+
+              tags: []
+
+              tenant: null
+
+              url: http://127.0.0.1:8000/api/ipam/ip-addresses/2/
+
+              vrf: null
+
+            l2vpn_termination: null
+
+            label: ''
+
+            lag: null
+
+            last_updated: '2022-12-20T06:03:45.455312Z'
+
+            link_peers: []
+
+            link_peers_type: null
+
+            mac_address: null
+
+            mark_connected: false
+
+            mgmt_only: false
+
+            mode: null
+
+            module: null
+
+            mtu: null
+
+            name: ether2
+
+            parent: null
+
+            poe_mode: null
+
+            poe_type: null
+
+            rf_channel: null
+
+            rf_channel_frequency: null
+
+            rf_channel_width: null
+
+            rf_role: null
+
+            speed: null
+
+            tagged_vlans: []
+
+            tags: []
+
+            tx_power: null
+
+            type:
+
+              label: 100BASE-TX (10/100ME)
+
+              value: 100base-tx
+
+            untagged_vlan: null
+
+            url: http://127.0.0.1:8000/api/dcim/interfaces/2/
+
+            vdcs: []
+
+            vrf: null
+
+            wireless_lans: []
+
+            wireless_link: null
+
+            wwn: null
+
+          is_virtual: false
+
+          local_context_data:
+
+          - null
+
+          locations: []
+
+          manufacturers:
+
+          - mymanufacturer
+
+          primary_ip4: 10.10.10.3
+
+          regions: []
+
+          services: []
+
+          site_groups: []
+
+          sites:
+
+          - mysite
+
+          status:
+
+            label: Active
+
+            value: active
+
+          tags: []
