@@ -116,7 +116,7 @@ python3 manage.py runserver 0.0.0.0:8000 --insecure
 
 ![](lab3_1.png)
 
-## Устанавливка ansible-модулей для Netbox'a
+## Установка ansible-модулей для Netbox'a
 
 ```
 ansible-galaxy collection install netbox.netbox
