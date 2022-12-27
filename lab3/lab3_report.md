@@ -16,6 +16,8 @@ Date of create: 15.12.2022
 
 Date of finished: 20.12.2022
 
+# Развертывание дополнительного CHR, первый сценарий Ansible
+
 ## Установка Netbox
 
 ### Настройка окружения
@@ -110,6 +112,10 @@ sudo systemctl enable netbox netbox-rq
 python3 manage.py runserver 0.0.0.0:8000 --insecure
 ```
 
+Теперь веб-интерфейс нетбокса доступен по http://127.0.0.1:8000:
+
+![image](https://user-images.githubusercontent.com/52206303/209616931-bbcfaa77-e040-4d78-b7bd-6ccaee98d128.png)
+
 ## Информация о роутерах
 
 Создаём сайт, мануфактуру и роль. Создаём 2 роутера. Создаём для этих роутеров интерфейс ether2. Назначаем ему первичный IP, равный IP роутеров в сети и произвольный вторичный адрес. Итог:
@@ -133,11 +139,18 @@ validate_certs: True
 config_context: False
 interfaces: True
 ```
+
+Токен у каждого нетбокс-аккаунта свой. Найти его можно в http://127.0.0.1:8000/user/api-tokens/ :
+
+![image](https://user-images.githubusercontent.com/52206303/209617133-5d63bbdc-0d4a-4a6d-ab16-0477c9caafda.png)
+
 2. Сохраняем вывод скрипта в файл командой:
 ```
 ansible-inventory -v --list -y -i netbox_inventory.yml > nb_inventory.yml
 ```
 3. В файле теперь находится информация об устройствах в YAML-формате. Мы можем использовать данный файл в качестве инвентарного.
+
+![image](https://user-images.githubusercontent.com/52206303/209617646-832f7829-d68a-4db4-8588-86b521a4fe0f.png)
 
 ## Настройка роутеров по информации из Netbox
 
