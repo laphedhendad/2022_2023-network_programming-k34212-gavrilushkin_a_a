@@ -65,6 +65,13 @@ ansible_ssh_port=22
           - /routing ospf area add instance=default name=backbone
           - /routing ospf interface-template add area=backbone interfaces=ether1 type=ptp
 ```
+
+Настройка OSPF с одной областью происходит по следующему алгоритму:
+1. Создаём OSPF-инстанс;
+2. Создаём виртуальный loopback-интерфейс, чтобы установить его в качестве идентификатора;
+3. Прописываем ему IP в OSPF-сети;
+4. Создаём OSPF зону и прокидываем её на реальный интерфейс.
+
 ### Результаты
 
 1. Запускаем playbook командой:
