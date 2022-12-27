@@ -84,7 +84,7 @@ ansible_ssh_port=22
           - /routing ospf instance add name=default
           - /interface bridge add name=loopback
           - /ip address add address={{router_ospf_ip}} interface=loopback
-          - /routing ospf instance set 0 router-id={{router_id}}
+          - /routing ospf instance set 0 router-id={{router_ospf_ip}}
           - /routing ospf area add instance=default name=backbone
           - /routing ospf interface-template add area=backbone interfaces=ether1 type=ptp
 ```
