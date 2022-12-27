@@ -16,6 +16,8 @@ Date of create: 14.12.2022
 
 Date of finished: 
 
+# Развертывание дополнительного CHR, первый сценарий Ansible
+
 ## Второй роутер в сети
 
 ### Повторяем шаги с настройкой ovpn-клиента из [первой лабораторной работы](https://github.com/laphedhendad/2022_2023-network_programming-k34212-gavrilushkin_a_a/blob/main/lab1/lab1_report.md)
